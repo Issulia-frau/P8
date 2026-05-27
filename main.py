@@ -380,16 +380,16 @@ def home():
     return {"status": "ok"}
 
 @app.post("/predict")
-if model is None:
+def predict(data: dict):
+
+    if model is None:
         return {
             "request_id": "test-mode",
             "predictions": [0] * len(df),
             "latency": 0
         }
 
-
-
-def predict(data: dict):
+    
     request_id = str(uuid.uuid4())
     start_time = time.time()
 
@@ -469,8 +469,10 @@ def predict(data: dict):
 
 
 @app.post("/predictOpti")
+def predict2(data: dict):
 
-if model is None:
+
+    if model is None:
         return {
             "request_id": "test-mode",
             "predictions": [0] * len(df),
@@ -478,12 +480,11 @@ if model is None:
         }
 
 
-
-def predict2(data: dict):
+    
     request_id = str(uuid.uuid4())
     start_time = time.time()
 
-
+    
     pr = cProfile.Profile()
     pr.enable()
 
