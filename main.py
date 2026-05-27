@@ -52,6 +52,7 @@ import numpy as np
 
 from elasticsearch import Elasticsearch
 import threading
+import os
 
 
 app = FastAPI()
@@ -69,6 +70,16 @@ model2 = mlflow.pyfunc.load_model(MODEL_URI2)
 logging.basicConfig(level=logging.INFO)
 
 
+TEST_MODE = os.getenv("TEST_MODE", "0") == "1"
+
+if not TEST_MODE:
+    model = mlflow.pyfunc.load_model(MODEL_URI)
+    model2 = mlflow.pyfunc.load_model(MODEL_URI2)
+    REFERENCE_DF = pd.read_csv("reference_sample.csv")
+else:
+    model = None
+    model2 = None
+    REFERENCE_DF = None
 #--------------fix for warnings------------------------
 def sanitize(df):
     df = df.copy()
