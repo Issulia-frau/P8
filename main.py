@@ -56,19 +56,21 @@ import os
 
 
 app = FastAPI()
+TEST_MODE = os.getenv("TEST_MODE", "0") == "1"
 
-
-if TEST_MODE == "1":
+if TEST_MODE:
+    model = None
+    model2 = None
     REFERENCE_DF = None
 else:
     REFERENCE_DF = pd.read_csv("reference_sample.csv")
-MODEL_URI = os.getenv("MODEL_URI", "runs:/c6d38647e7e94d7795d9b13950b0c3cd/model")
+    model = mlflow.pyfunc.load_model(MODEL_URI)
+    model2 = mlflow.pyfunc.load_model(MODEL_URI2)
+    
+    MODEL_URI = os.getenv("MODEL_URI", "runs:/c6d38647e7e94d7795d9b13950b0c3cd/model")
+    MODEL_URI2 = os.getenv("MODEL_URI", "runs:/2dfdd4935e3e4492b06b0db361e5d1f9/model")
 
-MODEL_URI2 = os.getenv("MODEL_URI", "runs:/2dfdd4935e3e4492b06b0db361e5d1f9/model")
 
-model = mlflow.pyfunc.load_model(MODEL_URI)
-
-model2 = mlflow.pyfunc.load_model(MODEL_URI2)
 
 logging.basicConfig(level=logging.INFO)
 
