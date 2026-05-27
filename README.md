@@ -1,4 +1,4 @@
-# API MLOps — Scoring Crédit
+# API MLOps
 
 ## Description
 
@@ -10,7 +10,28 @@ L’API permet :
 - de monitorer les performances du modèle
 - de détecter le drift des données avec Evidently
 - de centraliser les logs dans Elasticsearch
+- de visualiser les métriques avec Kibana
 - d’utiliser une pipeline CI/CD avec GitHub Actions
+
+---
+
+# Architecture
+
+```text
+Client
+   |
+   v
+FastAPI API
+   |
+   +--> MLflow Models
+   |
+   +--> Evidently Drift Detection
+   |
+   +--> Elasticsearch
+              |
+              v
+           Kibana
+```
 
 ---
 
@@ -63,6 +84,105 @@ Endpoint utilisant une version optimisée du modèle.
 
 ---
 
+# Technologies utilisées
+
+- Python 3.11
+- FastAPI
+- MLflow
+- Pandas
+- NumPy
+- Evidently AI
+- Elasticsearch
+- Kibana
+- Docker
+- Pytest
+- GitHub Actions
+
+---
+
+# Installation locale
+
+## Cloner le projet
+
+```bash
+git clone <repo_url>
+cd <repo>
+```
+
+---
+
+# Dépendances locales obligatoires
+
+Pour exécuter le projet localement, Elasticsearch et Kibana doivent être lancés.
+
+## Lancer Elasticsearch
+
+```bash
+docker run -d \
+  --name elasticsearch \
+  -p 9200:9200 \
+  -e "discovery.type=single-node" \
+  docker.elastic.co/elasticsearch/elasticsearch:8.12.0
+```
+
+---
+
+## Lancer Kibana
+
+```bash
+docker run -d \
+  --name kibana \
+  -p 5601:5601 \
+  --link elasticsearch:elasticsearch \
+  docker.elastic.co/kibana/kibana:8.12.0
+```
+
+---
+
+## Vérifier Elasticsearch
+
+```text
+http://localhost:9200
+```
+
+---
+
+## Vérifier Kibana
+
+```text
+http://localhost:5601
+```
+
+---
+
+# Installer les dépendances Python
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+# Lancement de l’API
+
+```bash
+uvicorn main:app --reload
+```
+
+API disponible sur :
+
+```text
+http://localhost:8000
+```
+
+Documentation Swagger :
+
+```text
+http://localhost:8000/docs
+```
+
+---
+
 # Exemple de requête
 
 ## Prediction
@@ -103,60 +223,6 @@ curl -X POST "http://localhost:8000/predict" \
   "predictions": [0],
   "latency": 0.042
 }
-```
-
----
-
-# Technologies utilisées
-
-- Python 3.11
-- FastAPI
-- MLflow
-- Pandas
-- NumPy
-- Evidently AI
-- Elasticsearch
-- Docker
-- Pytest
-- GitHub Actions
-
----
-
-# Installation
-
-## Cloner le projet
-
-```bash
-git clone <repo_url>
-cd <repo>
-```
-
----
-
-## Installer les dépendances
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-# Lancement de l’API
-
-```bash
-uvicorn main:app --reload
-```
-
-API disponible sur :
-
-```text
-http://localhost:8000
-```
-
-Documentation Swagger :
-
-```text
-http://localhost:8000/docs
 ```
 
 ---
@@ -217,6 +283,7 @@ Le projet inclut :
 - profiling CPU
 - détection de drift
 - stockage Elasticsearch
+- visualisation Kibana
 
 ---
 
@@ -226,7 +293,6 @@ Le projet inclut :
 |---|---|
 | `MODEL_URI` | URI MLflow du modèle principal |
 | `MODEL_URI2` | URI MLflow du modèle optimisé |
-| `ELASTIC_URL` | URL Elasticsearch |
 | `TEST_MODE` | Active le mode test |
 
 ---
@@ -244,5 +310,5 @@ project/
 │
 └── .github/
     └── workflows/
-        └── ci.yml
+        └── main.yml
 ```
