@@ -387,6 +387,7 @@ def home():
 @app.post("/predict")
 def predict(data: dict):
 
+    df = pd.DataFrame(data["inputs"])
     if model is None:
         return {
             "request_id": "test-mode",
@@ -404,7 +405,7 @@ def predict(data: dict):
 
 
     try:
-        df = pd.DataFrame(data["inputs"])
+        #df = pd.DataFrame(data["inputs"])
 
         preds = model.predict(df)
 
@@ -476,7 +477,7 @@ def predict(data: dict):
 @app.post("/predictOpti")
 def predict2(data: dict):
 
-
+    df = pd.DataFrame(data["inputs"])
     if model is None:
         return {
             "request_id": "test-mode",
@@ -495,7 +496,7 @@ def predict2(data: dict):
 
 
     try:
-        df = pd.DataFrame(data["inputs"])
+        #df = pd.DataFrame(data["inputs"])
 
         preds = model2.predict(df)
 
