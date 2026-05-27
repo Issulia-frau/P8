@@ -26,17 +26,11 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          pip install pytest requests
-
-      - name: Start FastAPI server
-        run: |
-          uvicorn app:app --host 0.0.0.0 --port 8000 &
-          sleep 10
+          pip install pytest httpx
 
       - name: Run tests
         run: |
           pytest -v
-
 
   docker-build:
     needs: test
