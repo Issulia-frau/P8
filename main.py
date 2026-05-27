@@ -492,7 +492,7 @@ def predict2(data: dict):
     try:
         df = pd.DataFrame(data["inputs"])
 
-        preds = model2.predict2(df)
+        preds = model2.predict(df)
 
         latency = time.time() - start_time
 
