@@ -24,6 +24,7 @@ jobs:
 
       - name: Run tests (test mode)
         env:
+          PYTHONPATH: .
           TEST_MODE: "1"
         run: pytest -v
 
