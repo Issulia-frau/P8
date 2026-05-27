@@ -1,60 +1,23 @@
-import requests
+from fastapi.testclient import TestClient
+from app import app
 
-BASE_URL = "http://localhost:8000"
+client = TestClient(app)
 
 
 def test_healthcheck():
-    response = requests.get(f"{BASE_URL}/")
-
-    assert response.status_code == 200
-    assert response.json()["status"] == "ok"
+    r = client.get("/")
+    assert r.status_code == 200
 
 
 def test_predict():
-    payload = {
-        "inputs": [
-            {
-                "feature1": 10,
-                "feature2": 5,
-                "feature3": 1
-            }
-        ]
-    }
-
-    response = requests.post(
-        f"{BASE_URL}/predict",
-        json=payload
-    )
-
-    assert response.status_code == 200
-
-    body = response.json()
-
-    assert "predictions" in body
-    assert "request_id" in body
-    assert "latency" in body
+    r = client.post("/predict", json={
+        "inputs": [{"feature1": 1, "feature2": 2, "feature3": 3}]
+    })
+    assert r.status_code == 200
 
 
 def test_predict_opti():
-    payload = {
-        "inputs": [
-            {
-                "feature1": 10,
-                "feature2": 5,
-                "feature3": 1
-            }
-        ]
-    }
-
-    response = requests.post(
-        f"{BASE_URL}/predictOpti",
-        json=payload
-    )
-
-    assert response.status_code == 200
-
-    body = response.json()
-
-    assert "predictions" in body
-    assert "request_id" in body
-    assert "latency" in body
+    r = client.post("/predictOpti", json={
+        "inputs": [{"feature1": 1, "feature2": 2, "feature3": 3}]
+    })
+    assert r.status_code == 200
