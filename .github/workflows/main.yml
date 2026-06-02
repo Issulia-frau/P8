@@ -20,13 +20,29 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          pip install pytest requests
+          pip install pytest requests uvicorn
 
-      - name: Run tests (test mode)
+      - name: Start FastAPI server
+        env:
+          PYTHONPATH: .
+          TEST_MODE: "1"
+        run: |
+          nohup uvicorn main:app --host 0.0.0.0 --port 8000 > uvicorn.log 2>&1 &
+          sleep 10
+
+      - name: Verify server is running
+        run: |
+          curl http://localhost:8000/
+
+      - name: Run tests
         env:
           PYTHONPATH: .
           TEST_MODE: "1"
         run: pytest -v
+
+      - name: Show server logs on failure
+        if: failure()
+        run: cat uvicorn.log
 
   docker-build:
     needs: test
